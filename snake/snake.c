@@ -33,7 +33,9 @@ enum Keys {
 
 const int opposite[4] = {DOWN, UP, LEFT, RIGHT};
 
-int is_opposite(int self, int other) { return self == opposite[other]; }
+int is_opposite(int self, int other) {
+    return self == opposite[other];
+}
 
 struct Cell {
     int x;

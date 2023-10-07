@@ -1,24 +1,19 @@
 #include <stdio.h>
 
 void print_tab(float *tab, int row, int col) {
-    int i, j;
-
-    for (i = 0; i < row; i++) {
-        for (j = 0; j < col; j++) {
-            printf("%.2f  ", tab[(i * col) + j]);
+    for (int i = 0; i < row; i++) {
+        for (int j = 0; j < col; j++) {
+            printf("%5.2f  ", tab[(i * col) + j]);
         }
         printf("\n");
     }
 }
 
 int pivot_col(float *tab, int col) {
-    int i, min = -1;
+    int min = -1;
 
-    for (i = 0; i < col - 1; i++) {
-        if (min == -1 && tab[i] < 0) {
-            min = i;
-        }
-        if (min != -1 && tab[min] > tab[i]) {
+    for (int i = 0; i < col - 1; i++) {
+        if (tab[i] < 0 && (min == -1 || tab[min] > tab[i])) {
             min = i;
         }
     }
@@ -27,10 +22,10 @@ int pivot_col(float *tab, int col) {
 }
 
 int pivot_row(float *tab, int row, int col, int pivot_col) {
-    int i, min_index = -1;
+    int min_index = -1;
     float min_ratio, ratio;
 
-    for (i = 1; i < row; i++) {
+    for (int i = 1; i < row; i++) {
         ratio = tab[(i * col) + (col - 1)] / tab[(i * col) + pivot_col];
 
         if (ratio > 0 && (min_index == -1 || min_ratio > ratio)) {
@@ -43,17 +38,16 @@ int pivot_row(float *tab, int row, int col, int pivot_col) {
 }
 
 void pivot(float *tab, int row, int col, int pivot_row, int pivot_col) {
-    int i, j;
     float pivot_val = tab[(pivot_row * col) + pivot_col];
 
-    for (i = 0; i < col; i++) {
+    for (int i = 0; i < col; i++) {
         tab[(pivot_row * col) + i] /= pivot_val;
     }
 
-    for (i = 0; i < row; i++) {
+    for (int i = 0; i < row; i++) {
         if (i != pivot_row) {
             float factor = tab[(i * col) + pivot_col];
-            for (j = 0; j < col; j++) {
+            for (int j = 0; j < col; j++) {
                 tab[(i * col) + j] -= factor * tab[(pivot_row * col) + j];
             }
         }
@@ -61,9 +55,7 @@ void pivot(float *tab, int row, int col, int pivot_row, int pivot_col) {
 }
 
 int has_negative(float *tab, int col) {
-    int i;
-
-    for (i = 0; i < col; i++) {
+    for (int i = 0; i < col; i++) {
         if (tab[i] < 0) {
             return 1;
         }
@@ -82,10 +74,8 @@ void simplex(float *tab, int row, int col) {
 }
 
 void fill_solution(float *tab, int row, int col, float *solutions) {
-    int i, j;
-
-    for (i = 1; i < row; i++) {
-        for (j = 0; j < col; j++) {
+    for (int i = 1; i < row; i++) {
+        for (int j = 0; j < col; j++) {
             if (tab[j] == 0 && tab[(i * col) + j] == 1) {
                 solutions[j] = tab[(i * col) + col - 1];
             }
@@ -94,18 +84,15 @@ void fill_solution(float *tab, int row, int col, float *solutions) {
 }
 
 void print_solution(float *solutions, int col) {
-    int i;
-
-    for (i = 0; i < col; i++) {
+    for (int i = 0; i < col; i++) {
         printf("x%d: %.2f\n", i + 1, solutions[i]);
     }
 }
 
 float get_optimum(float *solutions, float *fn, int fn_len) {
-    int i;
     float max = 0;
 
-    for (i = 0; i < fn_len; i++) {
+    for (int i = 0; i < fn_len; i++) {
         max += fn[i] * solutions[i];
     }
 
@@ -116,7 +103,7 @@ int main() {
     int row = 4, col = 6, fn_len = 2;
 
     float solutions[6], optimum;
-    float objective_fn[2] = {1, 2};
+    float objective_fn[2] = {1, 2}; // the function to maximize
 
     // clang-format off
     float tableau[4][6] = {
@@ -141,7 +128,7 @@ int main() {
     print_solution(ptr_s, col);
     printf("---- Optimum -----\n");
     optimum = get_optimum(ptr_s, (float *)objective_fn, fn_len);
-    printf("Result: %f\n", optimum);
+    printf("Result: %.2f\n", optimum);
 
     return 0;
 }
