@@ -1,18 +1,18 @@
 #include <limits.h>
 #include <stdio.h>
 
-void print_matrix(int *tab, int size) {
+void print_matrix(int *matrix, int size) {
     for (int i = 0; i < size; i++) {
         for (int j = 0; j < size; j++) {
-            printf("%4d", tab[(i * size) + j]);
+            printf("%4d", matrix[(i * size) + j]);
         }
         printf("\n");
     }
 }
 
-void copy_array(int *src, int *dist, int size) {
+void copy_array(int *src, int *dst, int size) {
     for (int i = 0; i < size * size; i++) {
-        dist[i] = src[i];
+        dst[i] = src[i];
     }
 }
 
@@ -22,14 +22,14 @@ void fill_array(int *arr, int value, int size) {
     }
 }
 
-void fill_basis(int *basis, int *tab, int size) {
+void fill_basis(int *basis, int *arr, int size) {
     int min;
 
     for (int i = 0; i < size; i++) {
         min = 0;
 
         for (int j = 1; j < size; j++) {
-            if (tab[(i * size) + min] > tab[(i * size) + j]) {
+            if (arr[(i * size) + min] > arr[(i * size) + j]) {
                 min = j;
             }
         }
@@ -59,9 +59,9 @@ void init_sets(int *set_a, int *set_b, int size) {
     fill_array(set_b, 0, size);
 }
 
-void transfer(int *src, int *dist, int pos) {
+void transfer(int *src, int *dst, int pos) {
     src[pos] = 0;
-    dist[pos] = 1;
+    dst[pos] = 1;
 }
 
 int contains_basis(int *basis, int col, int size) {
@@ -76,7 +76,6 @@ int contains_basis(int *basis, int col, int size) {
 
 void solve(int *matrix, int *solution, int size) {
     int basis[size];
-    int *ptr_basis = basis;
     int set_a[size], set_b[size]; // A' & A
 
     fill_basis(basis, matrix, size);
@@ -93,7 +92,7 @@ void solve(int *matrix, int *solution, int size) {
         transfer(set_a, set_b, col);
 
         int has_basis = 0;
-        int min, c_row, c_col, min_a, temp, d_col;
+        int min, c_row, c_col, d_col, min_a, temp;
 
         do {
             min = INT_MAX;
@@ -195,7 +194,6 @@ int main() {
 
     int *ptr = (int *)matrix;
     int *ptr_cp = (int *)matrix_cp;
-    int *ptr_s = solution;
 
     copy_array(ptr, ptr_cp, size);
 
